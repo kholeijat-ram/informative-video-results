@@ -1,332 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Interactive YouTube Lesson</title>
+<meta charset="UTF-8">
+<title>Interactive YouTube Video Quiz</title>
 <style>
-  body { margin: 0; font-family: system-ui, Arial, sans-serif; background:#f7f7f7; }
-  .wrap { max-width: 960px; margin: 32px auto; padding: 0 16px; }
-  .player-area { position: relative; background:#000; }
-  #player { width: 100%; aspect-ratio: 16/9; }
-  .overlay {
-    position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
-    background: rgba(0,0,0,0.65); padding: 16px;
+  body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; }
+  #player { margin: 20px auto; display: block; }
+  #quizBox {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border: 2px solid #333;
+    z-index: 1000;
+    width: 300px;
   }
-  .card {
-    width: min(640px, 94vw);
-    background: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-    padding: 20px 20px 16px;
+  #overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 900;
   }
-  .card h3 { margin: 0 0 12px; font-size: 1.2rem; }
-  .opts { display: grid; gap: 10px; margin: 12px 0; }
-  .optBtn {
-    border: 1px solid #ddd; border-radius: 10px; padding: 12px 14px;
-    background: #fafafa; cursor: pointer; text-align: left;
-  }
-  .optBtn:hover { background: #f0f0f0; }
-  .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
-  .btn {
-    border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer;
-  }
-  .primary { background: #2563eb; color: #fff; }
-  .ghost { background: #efefef; }
-  .toast {
-    position: fixed; right: 16px; bottom: 16px; background: #111; color: #fff;
-    padding: 10px 14px; border-radius: 8px; opacity: 0; transform: translateY(8px);
-    transition: .25s ease; pointer-events: none;
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
-  .bar {
-    display:flex; gap:8px; align-items: center; margin: 10px 0 0;
-    font-size: 0.9rem; color:#444;
-  }
-  .pill { padding:4px 8px; background:#eef; border-radius:999px; }
-  .log { background:#fff; border:1px solid #eee; border-radius:10px; padding:12px; margin-top:16px; }
-  .log h4 { margin:0 0 6px; }
-  .small { font-size: 0.88rem; color:#666; }
+  button { margin-top: 10px; }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Interactive YouTube Lesson</h1>
-    <div class="player-area">
-      <div id="player"></div>
 
-      <!-- Timed interaction overlay -->
-      <div id="overlay" class="overlay" aria-hidden="true">
-        <div class="card" role="dialog" aria-modal="true" aria-labelledby="qi">
-          <h3 id="qi">Quick Check ✍️</h3>
-          <div id="qtext"></div>
-          <div id="options" class="opts"></div>
-          <div class="actions">
-            <button id="skipBtn" class="btn ghost" type="button">Skip</button>
-            <button id="resumeBtn" class="btn primary" type="button">Resume</button>
-          </div>
-          <div class="bar">
-            <span class="pill" id="feedbackPill" style="display:none;"></span>
-            <span class="small" id="explain" style="display:none;"></span>
-          </div>
-        </div>
-      </div>
-    </div>
+<h1>Interactive Video Quiz</h1>
+<div id="player"></div>
 
-    <!-- Status + Local log preview (for debugging / teacher view) -->
-    <div class="log">
-      <h4>Session</h4>
-      <div class="small">Video time: <span id="tcur">0.0</span>s | Attempts: <span id="tatt">0</span> | Correct: <span id="tcor">0</span></div>
-      <details>
-        <summary>Show raw attempt log</summary>
-        <pre id="rawlog" class="small">[]</pre>
-      </details>
-    </div>
+<div id="overlay"></div>
+<div id="quizBox">
+  <h3 id="quizQuestion"></h3>
+  <div id="quizOptions"></div>
+  <button onclick="closeQuiz()">Close</button>
+</div>
 
-    <p class="small">
-      Tip: Put this file on your own domain and link to it from your YouTube description & card: “Try the interactive version here.”
-    </p>
-  </div>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+let INTERACTIONS = []; // will load from JSON
+let player;
+let quizShown = false;
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+// Load questions from JSON and pick random
+async function loadQuestions() {
+  try {
+    const res = await fetch('questions.json');
+    const allQuestions = await res.json();
 
-  <!-- 1) YouTube IFrame Player API -->
-  <script>
-    // Load YouTube API async
-    (function(){
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.head.appendChild(tag);
-    })();
+    // Pick ONE random question
+    const randomIndex = Math.floor(Math.random() * allQuestions.length);
+    INTERACTIONS = [ allQuestions[randomIndex] ];
 
-    // 2) Config — replace with your video and your optional logging endpoint
-    const CONFIG = {
-      YT_VIDEO_ID: "SfWNaVN6LMw",
-      CHECK_INTERVAL_MS: 250,
-      // Optional Google Apps Script Web App URL to log attempts to Google Sheets:
-      LOG_ENDPOINT: "", // e.g., "https://script.google.com/macros/s/AKfycb.../exec"
-      ENABLE_TTS: true // Text-to-Speech narration for prompts/feedback (browser SpeechSynthesis)
+    console.log("Loaded questions:", INTERACTIONS);
+  } catch (err) {
+    console.error("Error loading questions.json:", err);
+  }
+}
+
+// YouTube API setup
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    videoId: 'YOUR_VIDEO_ID', // replace with your YouTube video ID
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+function onPlayerReady(event) {
+  setInterval(checkVideoTime, 500);
+}
+
+function onPlayerStateChange(event) {}
+
+// Check time and trigger quiz
+function checkVideoTime() {
+  if (!player || !INTERACTIONS.length) return;
+  const currentTime = player.getCurrentTime();
+
+  for (const quiz of INTERACTIONS) {
+    if (!quizShown && currentTime >= quiz.time) {
+      showQuiz(quiz);
+      quizShown = true;
+    }
+  }
+}
+
+// Show quiz popup
+function showQuiz(quiz) {
+  document.getElementById('quizQuestion').innerText = quiz.question;
+  const optionsContainer = document.getElementById('quizOptions');
+  optionsContainer.innerHTML = '';
+  quiz.options.forEach(option => {
+    const btn = document.createElement('button');
+    btn.innerText = option;
+    btn.onclick = () => {
+      if (option === quiz.answer) {
+        alert("Correct!");
+      } else {
+        alert("Wrong answer.");
+      }
+      closeQuiz();
     };
+    optionsContainer.appendChild(btn);
+  });
 
-    // 3) Timed interactions — add as many as you like
-    //    Each item triggers once when player time enters [timeStart, timeEnd]
-    const INTERACTIONS = [
-      {
-        id: "q1",
-        timeStart: 15, timeEnd: 30, // seconds
-        type: "mcq",
-        prompt: "Factorize: x² - 5x + 6",
-        options: ["(x-2)(x-3)", "(x+2)(x-3)", "(x-1)(x-6)", "(x+1)(x-6)"],
-        correctIndex: 0,
-        explanation: "6 factors to (2,3) and -5 is -2 + -3 ⇒ (x-2)(x-3).",
-        pauseVideo: true
-      },
-      {
-        id: "branch1",
-        timeStart: 45, timeEnd: 60,
-        type: "button",
-        prompt: "Want a quick refresher on factoring before continuing?",
-        buttons: [
-          { label: "Yes, recap", action: { seekTo: 75 } },
-          { label: "No, continue", action: { seekTo: 120 } }
-        ],
-        pauseVideo: true
-      }
-    ];
+  document.getElementById('overlay').style.display = 'block';
+  document.getElementById('quizBox').style.display = 'block';
+  player.pauseVideo();
+}
 
-    // 4) Minimal state & helpers
-    let player, interval = null, fired = new Set();
-    const overlay = document.getElementById('overlay');
-    const qtext = document.getElementById('qtext');
-    const options = document.getElementById('options');
-    const resumeBtn = document.getElementById('resumeBtn');
-    const skipBtn = document.getElementById('skipBtn');
-    const pill = document.getElementById('feedbackPill');
-    const explain = document.getElementById('explain');
-    const tcur = document.getElementById('tcur');
-    const tatt = document.getElementById('tatt');
-    const tcor = document.getElementById('tcor');
-    const rawlog = document.getElementById('rawlog');
-    const toast = document.getElementById('toast');
+// Close quiz
+function closeQuiz() {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('quizBox').style.display = 'none';
+  player.playVideo();
+}
 
-    const state = {
-      attempts: 0,
-      correct: 0,
-      log: JSON.parse(localStorage.getItem('interactiveLog') || '[]'),
-      currentIx: null,
-    };
+// Load questions first
+loadQuestions();
+</script>
 
-    function saveLog() {
-      localStorage.setItem('interactiveLog', JSON.stringify(state.log));
-      rawlog.textContent = JSON.stringify(state.log, null, 2);
-      tatt.textContent = state.attempts;
-      tcor.textContent = state.correct;
-    }
-
-    function say(text){
-      if(!CONFIG.ENABLE_TTS || !('speechSynthesis' in window)) return;
-      try {
-        const u = new SpeechSynthesisUtterance(text);
-        u.rate = 1.05;
-        window.speechSynthesis.speak(u);
-      } catch(e){}
-    }
-
-    function showToast(msg){
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(()=> toast.classList.remove('show'), 1400);
-    }
-
-    // 5) YouTube API boot
-    window.onYouTubeIframeAPIReady = function(){
-      player = new YT.Player('player', {
-        videoId: CONFIG.YT_VIDEO_ID,
-        playerVars: {
-          rel: 0, modestbranding: 1, playsinline: 1
-        },
-        events: {
-          onReady: onReady,
-          onStateChange: onStateChange
-        }
-      });
-    };
-
-    function onReady(){
-      interval = setInterval(tick, CONFIG.CHECK_INTERVAL_MS);
-      saveLog();
-    }
-
-    function onStateChange(){
-      // could react to play/pause if needed
-    }
-
-    function tick(){
-      if(!player || typeof player.getCurrentTime !== 'function') return;
-      const t = player.getCurrentTime();
-      tcur.textContent = t.toFixed(1);
-
-      // Find the first un-fired interaction which matches the current time
-      for(const ix of INTERACTIONS){
-        if (fired.has(ix.id)) continue;
-        if (t >= ix.timeStart && t < ix.timeEnd){
-          triggerInteraction(ix);
-          fired.add(ix.id);
-          break;
-        }
-      }
-    }
-
-    function clearOverlay(){
-      overlay.style.display = 'none';
-      overlay.setAttribute('aria-hidden', 'true');
-      qtext.innerHTML = '';
-      options.innerHTML = '';
-      pill.style.display = 'none';
-      explain.style.display = 'none';
-      state.currentIx = null;
-    }
-
-    function triggerInteraction(ix){
-      state.currentIx = ix;
-      // Pause if configured
-      if (ix.pauseVideo && player && player.pauseVideo) player.pauseVideo();
-
-      overlay.style.display = 'flex';
-      overlay.setAttribute('aria-hidden', 'false');
-
-      qtext.textContent = ix.prompt;
-      options.innerHTML = '';
-
-      if (ix.type === 'mcq'){
-        say(ix.prompt);
-        ix.options.forEach((opt, i) => {
-          const b = document.createElement('button');
-          b.className = 'optBtn';
-          b.type = 'button';
-          b.textContent = opt;
-          b.addEventListener('click', () => onSelectMCQ(ix, i));
-          options.appendChild(b);
-        });
-        resumeBtn.style.display = 'inline-flex';
-      } else if (ix.type === 'button'){
-        (ix.buttons || []).forEach((btn) => {
-          const b = document.createElement('button');
-          b.className = 'btn optBtn'; // reuse style
-          b.type = 'button';
-          b.textContent = btn.label;
-          b.addEventListener('click', () => {
-            logAttempt(ix, {action: btn.label});
-            if (btn.action?.seekTo != null && player?.seekTo){
-              player.seekTo(btn.action.seekTo, true);
-            }
-            showToast('Jumped in video');
-            clearOverlay();
-            if (player?.playVideo) player.playVideo();
-          });
-          options.appendChild(b);
-        });
-        resumeBtn.style.display = 'none'; // resume happens via choice
-      }
-    }
-
-    function onSelectMCQ(ix, chosenIndex){
-      state.attempts++;
-      const correct = chosenIndex === ix.correctIndex;
-      if (correct) state.correct++;
-
-      pill.textContent = correct ? "Correct ✅" : "Try again ❌";
-      pill.style.display = 'inline-block';
-      explain.textContent = ix.explanation || "";
-      explain.style.display = ix.explanation ? 'inline' : 'none';
-
-      say(correct ? "Correct!" : "Not quite, check the explanation.");
-
-      logAttempt(ix, {chosenIndex, correct});
-
-      // Auto-continue after 1.2s on correct
-      if (correct){
-        setTimeout(() => {
-          clearOverlay();
-          if (player?.playVideo) player.playVideo();
-        }, 1200);
-      }
-      saveLog();
-    }
-
-    function logAttempt(ix, extra){
-      const entry = {
-        ts: new Date().toISOString(),
-        videoId: CONFIG.YT_VIDEO_ID,
-        interactionId: ix.id,
-        type: ix.type,
-        videoTime: player?.getCurrentTime ? Number(player.getCurrentTime().toFixed(2)) : null,
-        ...extra
-      };
-      state.log.push(entry);
-      // Try POST to endpoint if configured
-      if (CONFIG.LOG_ENDPOINT){
-        fetch(CONFIG.LOG_ENDPOINT, {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(entry)
-        }).catch(()=>{ /* ignore network errors */ });
-      }
-    }
-
-    resumeBtn.addEventListener('click', () => {
-      clearOverlay();
-      if (player?.playVideo) player.playVideo();
-    });
-
-    skipBtn.addEventListener('click', () => {
-      showToast('Skipped');
-      // still record skip
-      if (state.currentIx) logAttempt(state.currentIx, {skipped:true});
-      clearOverlay();
-      if (player?.playVideo) player.playVideo();
-      saveLog();
-    });
-  </script>
 </body>
 </html>
-
-
