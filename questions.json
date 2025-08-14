@@ -1,20 +1,17 @@
 [
   {
-    "time": 5,
     "question": "What is 2 + 2?",
-    "options": ["3", "4", "5", "6"],
+    "options": ["3", "4", "5"],
     "answer": "4"
   },
   {
-    "time": 10,
-    "question": "Which planet is known as the Red Planet?",
-    "options": ["Venus", "Mars", "Jupiter", "Saturn"],
-    "answer": "Mars"
+    "question": "What is the capital of France?",
+    "options": ["Paris", "London", "Rome"],
+    "answer": "Paris"
   },
   {
-    "time": 15,
-    "question": "Who invented the telephone?",
-    "options": ["Edison", "Tesla", "Bell", "Newton"],
-    "answer": "Bell"
+    "question": "Which planet is known as the Red Planet?",
+    "options": ["Mars", "Venus", "Jupiter"],
+    "answer": "Mars"
   }
 ]
