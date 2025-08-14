@@ -30,8 +30,207 @@
   },
 
   "Unit 2": {
-    "simple": [],
-    "medium": [],
-    "hard": []
-  }
+    "simple": [
+      {
+        "question": "What is 2 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think about pairs of things.",
+        "solution": "2 + 2 = 4 because adding two pairs makes four."
+      }
+    ],
+    "medium": [
+      {
+        "question": "What is 15 × 3?",
+        "options": ["30", "45", "50"],
+        "answer": "45",
+        "hint": "Multiplication is repeated addition.",
+        "solution": "15 × 3 = 45."
+      }
+    ],
+    "hard": [
+      {
+        "question": "Solve: (2 + 3)²",
+        "options": ["25", "10", "13"],
+        "answer": "25",
+        "hint": "Square means multiply by itself.",
+        "solution": "(2 + 3)² = 5² = 25."
+      }
+    ]
+  },
+"Unit 3": {
+    "simple": [
+      {
+        "question": "What is 2 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think about pairs of things.",
+        "solution": "2 + 2 = 4 because adding two pairs makes four."
+      }
+    ],
+    "medium": [
+      {
+        "question": "What is 15 × 3?",
+        "options": ["30", "45", "50"],
+        "answer": "45",
+        "hint": "Multiplication is repeated addition.",
+        "solution": "15 × 3 = 45."
+      }
+    ],
+    "hard": [
+      {
+        "question": "Solve: (2 + 3)²",
+        "options": ["25", "10", "13"],
+        "answer": "25",
+        "hint": "Square means multiply by itself.",
+        "solution": "(2 + 3)² = 5² = 25."
+      }
+    ]
+  },
+  "Unit 4": {
+    "simple": [
+      {
+        "question": "What is 2 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think about pairs of things.",
+        "solution": "2 + 2 = 4 because adding two pairs makes four."
+      }
+    ],
+    "medium": [
+      {
+        "question": "What is 15 × 3?",
+        "options": ["30", "45", "50"],
+        "answer": "45",
+        "hint": "Multiplication is repeated addition.",
+        "solution": "15 × 3 = 45."
+      }
+    ],
+    "hard": [
+      {
+        "question": "Solve: (2 + 3)²",
+        "options": ["25", "10", "13"],
+        "answer": "25",
+        "hint": "Square means multiply by itself.",
+        "solution": "(2 + 3)² = 5² = 25."
+      }
+    ]
+  },
+  "Unit 5": {
+    "simple": [
+      {
+        "question": "What is 2 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think about pairs of things.",
+        "solution": "2 + 2 = 4 because adding two pairs makes four."
+      }
+    ],
+    "medium": [
+      {
+        "question": "What is 15 × 3?",
+        "options": ["30", "45", "50"],
+        "answer": "45",
+        "hint": "Multiplication is repeated addition.",
+        "solution": "15 × 3 = 45."
+      }
+    ],
+    "hard": [
+      {
+        "question": "Solve: (2 + 3)²",
+        "options": ["25", "10", "13"],
+        "answer": "25",
+        "hint": "Square means multiply by itself.",
+        "solution": "(2 + 3)² = 5² = 25."
+      }
+    ]
+  },
+  "Unit 6": {
+    "simple": [
+      {
+        "question": "What is 2 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think about pairs of things.",
+        "solution": "2 + 2 = 4 because adding two pairs makes four."
+      }
+    ],
+    "medium": [
+      {
+        "question": "What is 15 × 3?",
+        "options": ["30", "45", "50"],
+        "answer": "45",
+        "hint": "Multiplication is repeated addition.",
+        "solution": "15 × 3 = 45."
+      }
+    ],
+    "hard": [
+      {
+        "question": "Solve: (2 + 3)²",
+        "options": ["25", "10", "13"],
+        "answer": "25",
+        "hint": "Square means multiply by itself.",
+        "solution": "(2 + 3)² = 5² = 25."
+      }
+    ]
+  },
+  "Unit 7": {
+    "simple": [
+      {
+        "question": "What is 2 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think about pairs of things.",
+        "solution": "2 + 2 = 4 because adding two pairs makes four."
+      }
+    ],
+    "medium": [
+      {
+        "question": "What is 15 × 3?",
+        "options": ["30", "45", "50"],
+        "answer": "45",
+        "hint": "Multiplication is repeated addition.",
+        "solution": "15 × 3 = 45."
+      }
+    ],
+    "hard": [
+      {
+        "question": "Solve: (2 + 3)²",
+        "options": ["25", "10", "13"],
+        "answer": "25",
+        "hint": "Square means multiply by itself.",
+        "solution": "(2 + 3)² = 5² = 25."
+      }
+    ]
+  },
+  "Unit 8": {
+    "simple": [
+      {
+        "question": "What is 2 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think about pairs of things.",
+        "solution": "2 + 2 = 4 because adding two pairs makes four."
+      }
+    ],
+    "medium": [
+      {
+        "question": "What is 15 × 3?",
+        "options": ["30", "45", "50"],
+        "answer": "45",
+        "hint": "Multiplication is repeated addition.",
+        "solution": "15 × 3 = 45."
+      }
+    ],
+    "hard": [
+      {
+        "question": "Solve: (2 + 3)²",
+        "options": ["25", "10", "13"],
+        "answer": "25",
+        "hint": "Square means multiply by itself.",
+        "solution": "(2 + 3)² = 5² = 25."
+      }
+    ]
+  },
+  
 }
