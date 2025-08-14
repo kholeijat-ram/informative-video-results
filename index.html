@@ -1,59 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Quiz</title>
+<title>Select Unit & Difficulty</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-  <h1>Quick Quiz</h1>
-  <div id="quiz">
-    <p id="questionText">Loading question...</p>
-    <div id="options"></div>
-  </div>
-  <button onclick="nextQuestion()">Next Question</button>
+  <h1>Select a Unit</h1>
+  <div id="units"></div>
+
+  <h2>Select Difficulty</h2>
+  <select id="difficulty">
+    <option value="simple">Simple</option>
+    <option value="medium">Medium</option>
+    <option value="hard">Hard</option>
+  </select>
+
+  <h2>Your Email</h2>
+  <input type="email" id="email" placeholder="Enter email" required>
+
+  <button onclick="startQuiz()">Start Quiz</button>
 </div>
 
 <script>
-let questions = [];
-let currentQuestion = null;
+const units = ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5", "Unit 6", "Unit 7", "Unit 8"];
+let selectedUnit = units[0];
 
-async function loadQuestions() {
-  const res = await fetch('questions.json');
-  questions = await res.json();
-  nextQuestion();
-}
-
-function nextQuestion() {
-  if (!questions.length) return;
-  
-  const randomIndex = Math.floor(Math.random() * questions.length);
-  currentQuestion = questions[randomIndex];
-
-  document.getElementById('questionText').innerText = currentQuestion.question;
-  const optionsContainer = document.getElementById('options');
-  optionsContainer.innerHTML = '';
-
-  currentQuestion.options.forEach(opt => {
+function loadUnits() {
+  const container = document.getElementById('units');
+  units.forEach(u => {
     const btn = document.createElement('button');
-    btn.innerText = opt;
-    btn.onclick = () => checkAnswer(opt);
-    optionsContainer.appendChild(btn);
+    btn.innerText = u;
+    btn.onclick = () => { selectedUnit = u; highlightSelected(u); };
+    container.appendChild(btn);
   });
 }
 
-function checkAnswer(selected) {
-  if (selected === currentQuestion.answer) {
-    alert('✅ Correct!');
-  } else {
-    alert('❌ Wrong! The answer was ' + currentQuestion.answer);
-  }
+function highlightSelected(unit) {
+  [...document.querySelectorAll('#units button')].forEach(b => {
+    b.style.background = (b.innerText === unit) ? '#007BFF' : '';
+    b.style.color = (b.innerText === unit) ? 'white' : '';
+  });
 }
 
-loadQuestions();
+function startQuiz() {
+  const difficulty = document.getElementById('difficulty').value;
+  const email = document.getElementById('email').value.trim();
+  if (!email) return alert("Please enter your email");
+
+  // Pass selected options to quiz.html
+  localStorage.setItem('unit', selectedUnit);
+  localStorage.setItem('difficulty', difficulty);
+  localStorage.setItem('email', email);
+
+  window.location.href = 'quiz.html';
+}
+
+loadUnits();
+highlightSelected(selectedUnit);
 </script>
 
 </body>
