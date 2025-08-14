@@ -2,129 +2,57 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Interactive YouTube Video Quiz</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; }
-  #player { margin: 20px auto; display: block; }
-  #quizBox {
-    display: none;
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border: 2px solid #333;
-    z-index: 1000;
-    width: 300px;
-  }
-  #overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 900;
-  }
-  button { margin-top: 10px; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Quiz</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Interactive Video Quiz</h1>
-<div id="player"></div>
-
-<div id="overlay"></div>
-<div id="quizBox">
-  <h3 id="quizQuestion"></h3>
-  <div id="quizOptions"></div>
-  <button onclick="closeQuiz()">Close</button>
+<div class="container">
+  <h1>Quick Quiz</h1>
+  <div id="quiz">
+    <p id="questionText">Loading question...</p>
+    <div id="options"></div>
+  </div>
+  <button onclick="nextQuestion()">Next Question</button>
 </div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-let INTERACTIONS = []; // will load from JSON
-let player;
-let quizShown = false;
+let questions = [];
+let currentQuestion = null;
 
-// Load questions from JSON and pick random
 async function loadQuestions() {
-  try {
-    const res = await fetch('questions.json');
-    const allQuestions = await res.json();
-
-    // Pick ONE random question
-    const randomIndex = Math.floor(Math.random() * allQuestions.length);
-    INTERACTIONS = [ allQuestions[randomIndex] ];
-
-    console.log("Loaded questions:", INTERACTIONS);
-  } catch (err) {
-    console.error("Error loading questions.json:", err);
-  }
+  const res = await fetch('questions.json');
+  questions = await res.json();
+  nextQuestion();
 }
 
-// YouTube API setup
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '390',
-    width: '640',
-    videoId: 'YOUR_VIDEO_ID', // replace with your YouTube video ID
-    events: {
-      'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
+function nextQuestion() {
+  if (!questions.length) return;
+  
+  const randomIndex = Math.floor(Math.random() * questions.length);
+  currentQuestion = questions[randomIndex];
 
-function onPlayerReady(event) {
-  setInterval(checkVideoTime, 500);
-}
-
-function onPlayerStateChange(event) {}
-
-// Check time and trigger quiz
-function checkVideoTime() {
-  if (!player || !INTERACTIONS.length) return;
-  const currentTime = player.getCurrentTime();
-
-  for (const quiz of INTERACTIONS) {
-    if (!quizShown && currentTime >= quiz.time) {
-      showQuiz(quiz);
-      quizShown = true;
-    }
-  }
-}
-
-// Show quiz popup
-function showQuiz(quiz) {
-  document.getElementById('quizQuestion').innerText = quiz.question;
-  const optionsContainer = document.getElementById('quizOptions');
+  document.getElementById('questionText').innerText = currentQuestion.question;
+  const optionsContainer = document.getElementById('options');
   optionsContainer.innerHTML = '';
-  quiz.options.forEach(option => {
+
+  currentQuestion.options.forEach(opt => {
     const btn = document.createElement('button');
-    btn.innerText = option;
-    btn.onclick = () => {
-      if (option === quiz.answer) {
-        alert("Correct!");
-      } else {
-        alert("Wrong answer.");
-      }
-      closeQuiz();
-    };
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(opt);
     optionsContainer.appendChild(btn);
   });
-
-  document.getElementById('overlay').style.display = 'block';
-  document.getElementById('quizBox').style.display = 'block';
-  player.pauseVideo();
 }
 
-// Close quiz
-function closeQuiz() {
-  document.getElementById('overlay').style.display = 'none';
-  document.getElementById('quizBox').style.display = 'none';
-  player.playVideo();
+function checkAnswer(selected) {
+  if (selected === currentQuestion.answer) {
+    alert('✅ Correct!');
+  } else {
+    alert('❌ Wrong! The answer was ' + currentQuestion.answer);
+  }
 }
 
-// Load questions first
 loadQuestions();
 </script>
 
