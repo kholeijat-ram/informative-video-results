@@ -10,6 +10,16 @@
       }
     
     ],
+      "simple": [
+      {
+        "question": "What is 3 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think s.",
+        "solution": "2 + 2 = 44 because adding two pairs makes four."
+      }
+    
+    ],
     "medium": [
       {
         "question": "What is 15 × 3?",
