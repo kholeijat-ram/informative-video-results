@@ -14,6 +14,13 @@
         "answer": "4",
         "hint": "Think hings.",
         "solution": "2 + 2 = 4 because adding two pairs makes four."
+      },
+      {
+        "question": "What is 3 + 2?",
+        "options": ["3", "4", "5"],
+        "answer": "4",
+        "hint": "Think hings.",
+        "solution": "2 + 2 = 55 because adding two pairs makes four."
       }
     
     ],
