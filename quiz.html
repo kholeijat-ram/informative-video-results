@@ -39,8 +39,7 @@ function nextQuestion() {
   if (currentIndex >= questions.length) {
     saveResults();
     alert("Quiz finished! Thank you.");
-    return;
-    currentIndex += 1;
+    return;    
   }
 
   const q = questions[currentIndex];
@@ -56,6 +55,7 @@ function nextQuestion() {
     btn.onclick = () => selectAnswer(opt);
     optionsDiv.appendChild(btn);
   });
+    currentIndex += 1;
 }
 
 function selectAnswer(option) {
