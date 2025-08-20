@@ -1,6 +1,4 @@
-const DATA_FILE = "data.csv";  // <== just edit this file in GitHub
-
-// Utils
+const DATA_FILE = "data.csv"; 
 const byId = id => document.getElementById(id);
 const mean = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : NaN;
 const sd = arr => {
@@ -10,7 +8,6 @@ const sd = arr => {
 };
 const fmt = (x,d=2)=>Number.isFinite(x)?x.toFixed(d):"-";
 
-// CSV parser (simple)
 function csvToArray(str) {
   return str.trim().split("\n").map(r => r.split(","));
 }
