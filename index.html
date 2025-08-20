@@ -1,23 +1,58 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Student Performance Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Student Performance Dashboard</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>Student Performance Dashboard</h1>
-  </header>
+<header>
+<h1>Student Performance Dashboard</h1>
+<p class="subtitle">Local CSV → GitHub Pages • Auto Analysis • A4 Printable</p>
+</header>
 
-  <section id="classSummary" class="card"></section>
-  <section id="studentSection" class="card"></section>
 
-  <footer>
-    <button id="print">Print A4</button>
-  </footer>
+<section id="classSummary" class="card">
+<h2>Class Dashboard</h2>
+<div id="classKPIs" class="kpi-grid"></div>
+<div id="classInterpretation" class="note"></div>
 
-  <script src="script.js"></script>
+
+<h3>Score Distribution</h3>
+<canvas id="hist" width="900" height="260"></canvas>
+
+
+<h3>Per‑Test Statistics</h3>
+<div id="perTestTable"></div>
+</section>
+
+
+<section id="studentSection" class="card">
+<h2>Student Dashboard</h2>
+<div id="studentTable"></div>
+</section>
+
+
+<section id="legend" class="card compact">
+<h3>Decision Flow (Quick Guide)</h3>
+<ul class="grid">
+<li><strong>Step 1 (Class Mean):</strong> ≥70% Easy → Increase | 40–70% Balanced | &lt;40% Hard → Reteach</li>
+<li><strong>Step 2 (Class SD):</strong> Low &lt;20% of mean | Moderate 20–40% | High &gt;40% → Differentiate</li>
+<li><strong>Step 3 (Student Mean×SD):</strong> High×Low → Challenge | Low×Low → Reteach | High×High → Coach | Low×High → Support</li>
+<li><strong>Step 4 (Growth):</strong> ↑ Praise | → Try new methods | ↓ Investigate</li>
+<li><strong>Step 5 (Z-Score):</strong> Z&gt;0 Advanced | Z≈0 Average | Z&lt;0 Support</li>
+<li><strong>Step 6 (Distribution):</strong> Bell OK | Left skew Hard | Right skew Easy</li>
+</ul>
+</section>
+
+
+<footer>
+<button id="print">Print A4</button>
+<span class="status" id="status"></span>
+</footer>
+
+
+<script src="script.js"></script>
 </body>
 </html>
