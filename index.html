@@ -1,22 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Performance Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Student Performance Dashboard</h1>
-  </header>
+  <div class="container">
+    <h1>📊 Student Performance Dashboard</h1>
+    <p>Edit <code>data.csv</code> in this repo and refresh to update results.</p>
 
-  <section id="classSummary" class="card"></section>
-  <section id="studentSection" class="card"></section>
+    <!-- Class Summary -->
+    <section id="class-summary">
+      <h2>🏫 Class Summary</h2>
+      <div id="class-stats"></div>
+    </section>
 
-  <footer>
-    <button id="print">Print A4</button>
-  </footer>
+    <!-- Per-Test Summary -->
+    <section id="per-test-summary">
+      <h2>📝 Per-Test Summary</h2>
+      <div id="per-test-stats"></div>
+    </section>
+
+    <!-- Student Dashboard -->
+    <section id="student-dashboard">
+      <h2>👩‍🎓 Student Dashboard</h2>
+      <table id="student-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Mean</th>
+            <th>SD</th>
+            <th>Z-Score</th>
+            <th>Growth</th>
+            <th>Category</th>
+            <th>Advice</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
 
   <script src="script.js"></script>
 </body>
