@@ -61,3 +61,19 @@ th {
 .badge.red { background-color: #dc3545; }     /* Weak & unstable */
 .badge.yellow { background-color: #ffc107; }  /* Strong but inconsistent */
 .badge.blue { background-color: #007bff; }    /* Steady but weak */
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.passport {
+  width: 80px;   /* passport size */
+  height: 100px; /* typical passport ratio */
+  object-fit: cover;
+  border: 2px solid #333;
+  border-radius: 8px;
+  margin-right: 15px;
+}
+
