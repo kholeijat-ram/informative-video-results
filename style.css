@@ -69,8 +69,8 @@ th {
 }
 
 .passport {
-  width: 80px;   /* passport size */
-  height: 100px; /* typical passport ratio */
+  width: 180px;   /* passport size */
+  height: 200px; /* typical passport ratio */
   object-fit: cover;
   border: 2px solid #333;
   border-radius: 8px;
