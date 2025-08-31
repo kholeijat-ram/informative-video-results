@@ -1,38 +1,151 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Ram Bahadur | Teacher</title>
-    <style>
-        body { font-family: Arial; text-align: center; margin-top: 50px; }
-        .box { margin: 20px; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Ram Bahadur | Teaching Portfolio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f6fa;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      padding: 40px;
+      text-align: center;
+      color: white;
+    }
+    header img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 4px solid white;
+    }
+    header h1 {
+      margin: 15px 0 5px;
+      font-size: 2.2rem;
+    }
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: 30px auto;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+    .gallery img {
+      width: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+      height: 150px;
+    }
+    .video {
+      text-align: center;
+    }
+    iframe {
+      border-radius: 10px;
+      margin: 10px;
+      max-width: 100%;
+    }
+    .access {
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background: #4facfe;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #3a8de0;
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to My Teaching Page</h1>
-    <p>Hello! I am Ram Bahadur. Here is my teaching journey and student support platform.</p>
 
-    <div class="box">
-        <h3>Enter Access Code</h3>
-        <input type="password" id="accessCode" placeholder="Enter Code">
-        <button onclick="checkCode()">Submit</button>
+  <!-- Header/Profile -->
+  <header>
+    <img src="a.jpg" alt="Ram Bahadur">
+    <h1>Ram Bahadur Malla</h1>
+    <p>Educator | Innovator | Lifelong Learner</p>
+  </header>
+
+  <div class="container">
+
+    <!-- Bio Section -->
+    <div class="card">
+      <h2>About Me</h2>
+      <p>I am a passionate educator dedicated to improving the learning journey of students. 
+         I believe in breaking complex concepts into simple learning blocks and motivating students 
+         through results-driven teaching. Welcome to my digital teaching portfolio!</p>
     </div>
 
-    <script>
+    <!-- Student Gallery -->
+    <div class="card">
+      <h2>Student Moments</h2>
+      <div class="gallery">
+        <img src="abc1.jpg" alt="Student 1">
+        <img src="abc2.jpg" alt="Student 2">
+        <img src="abc3.jpg" alt="Student 3">
+        <img src="abc4.jpg" alt="Student 4">
+        <img src="abc5.jpg" alt="Student 5">
+      </div>
+    </div>
+
+    <!-- YouTube Section -->
+    <div class="card video">
+      <h2>My Teaching Videos</h2>
+      <iframe width="300" height="170" src="https://www.youtube.com/embed/VIDEO_ID_1" allowfullscreen></iframe>
+      <iframe width="300" height="170" src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
+    </div>
+
+    <!-- Student Result Access -->
+    <div class="card access">
+      <h2>Access Your Class Results</h2>
+      <p>Enter your access code to view results</p>
+      <input type="password" id="accessCode" placeholder="Enter Code">
+      <button onclick="checkCode()">Submit</button>
+    </div>
+
+  </div>
+
+  <script>
     function checkCode() {
-        let code = document.getElementById("accessCode").value;
-        
-        if(code === "class7") {
-            window.location.href = "class7.html";  // Class 1 page
-        } else if(code === "class8") {
-            window.location.href = "class8.html";  // Class 2 page
-        } else if(code === "class9") {
-            window.location.href = "class9.html";  // Class 3 page
-        } else if(code === "class10"){
-            window.location.href = "class10.html";  // Class 3 page
-        } else {
-            alert("Invalid Code! Try again.");
-        }
+      let code = document.getElementById("accessCode").value;
+      if(code === "class7") {
+          window.location.href = "class7.html";
+      } else if(code === "class8") {
+          window.location.href = "class8.html";
+      } else if(code === "class9") { 
+          window.location.href = "class9.html";
+      } else if(code === "class10") { 
+          window.location.href = "class10.html";
+      } else {
+          alert("Invalid Code! Try again.");
+      }
     }
-    </script>
+  </script>
 </body>
 </html>
