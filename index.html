@@ -82,6 +82,7 @@
       background: #3a8de0;
     }
   </style>
+  
 </head>
 <body>
 
@@ -138,12 +139,16 @@
     function checkCode() {
       let code = document.getElementById("accessCode").value;
       if(code === "class7") {
+          sessionStorage.setItem("cameFromLanding", "yes");
           window.location.href = "class7.html";
       } else if(code === "class8") {
+          sessionStorage.setItem("cameFromLanding", "yes");
           window.location.href = "class8.html";
       } else if(code === "class9") { 
+          sessionStorage.setItem("cameFromLanding", "yes");
           window.location.href = "class9.html";
       } else if(code === "class10") { 
+          sessionStorage.setItem("cameFromLanding", "yes");
           window.location.href = "class10.html";
       } else {
           alert("Invalid Code! Try again.");
