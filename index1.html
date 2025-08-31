@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ram Bahadur | Teacher</title>
+    <style>
+        body { font-family: Arial; text-align: center; margin-top: 50px; }
+        .box { margin: 20px; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Teaching Page</h1>
+    <p>Hello! I am Ram Bahadur. Here is my teaching journey and student support platform.</p>
+
+    <div class="box">
+        <h3>Enter Access Code</h3>
+        <input type="password" id="accessCode" placeholder="Enter Code">
+        <button onclick="checkCode()">Submit</button>
+    </div>
+
+    <script>
+    function checkCode() {
+        let code = document.getElementById("accessCode").value;
+        
+        if(code === "ram123") {
+            window.location.href = "class1.html";  // Class 1 page
+        } else if(code === "maths456") {
+            window.location.href = "class2.html";  // Class 2 page
+        } else if(code === "science789") {
+            window.location.href = "class3.html";  // Class 3 page
+        } else {
+            alert("Invalid Code! Try again.");
+        }
+    }
+    </script>
+</body>
+</html>
