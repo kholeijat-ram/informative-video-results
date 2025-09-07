@@ -44,19 +44,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     
-textPath {
-  stroke-dasharray: 300;
-  stroke-dashoffset: 300;
-  fill: none; /* text will be filled via stroke */
-  stroke: #4facfe;
-  stroke-width: 1;
-  animation: drawText 5s linear forwards;
-}
-
-@keyframes drawText {
-  to { stroke-dashoffset: 0; }
-}
-    
+   
     .animated-button {
   display: inline-block;
   padding: 12px 25px;
@@ -135,22 +123,10 @@ textPath {
          through results-driven teaching. Welcome to my digital teaching portfolio!</p>
     </div>
 
-  <div class="card">
-  <h2>Math in Motion</h2>
-  <svg viewBox="0 0 500 100">
-    <!-- Path that text will follow -->
-    <path id="mathPath" d="M20,60 Q120,0 220,60 T420,60" fill="transparent"/>
-    
-    <!-- Text along path -->
-    <text font-size="24" fill="#4facfe">
-      <textPath href="#mathPath" startOffset="0%">
-        x² + y² = r²
-      </textPath>
-    </text>
-  </svg>
+  <div class="card"> 
   <a href="interactive-chalkboard.html" class="animated-button">Open Solver</a>
  
-</div>
+  </div>
 
 
     <!-- Student Gallery -->
