@@ -92,6 +92,19 @@
       }
     }
 
+textPath {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  fill: none; /* text will be filled via stroke */
+  stroke: #4facfe;
+  stroke-width: 1;
+  animation: drawText 5s linear forwards;
+}
+
+@keyframes drawText {
+  to { stroke-dashoffset: 0; }
+}
+
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -160,6 +173,22 @@
       </svg>
       <p style="text-align:center; font-style:italic;">Knowledge grows step by step...</p>
     </div>
+<div class="card">
+  <h2>Math in Motion</h2>
+  <svg viewBox="0 0 500 100">
+    <!-- Path that text will follow -->
+    <path id="mathPath" d="M20,60 Q120,0 220,60 T420,60" fill="transparent"/>
+    
+    <!-- Text along path -->
+    <text font-size="24" fill="#4facfe">
+      <textPath href="#mathPath" startOffset="0%">
+        x² + y² = r²
+      </textPath>
+    </text>
+  </svg>
+  <p style="text-align:center; font-style:italic;">Step by step, equations come alive!</p>
+</div>
+
 
     <!-- Student Gallery -->
     <div class="card">
