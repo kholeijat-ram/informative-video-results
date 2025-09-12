@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interactive Venn Scratch Diagram</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f0f0;
+      text-align: center;
+    }
+    #container {
+      position: relative;
+      width: 500px;
+      height: 400px;
+      margin: 40px auto;
+      border: 2px solid black;
+      background: white;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .label {
+      position: absolute;
+      font-size: 20px;
+      font-weight: bold;
+      color: black;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Scratch to Reveal Venn Diagram Concepts</h2>
+  <div id="container">
+    <canvas id="backgroundCanvas" width="500" height="400"></canvas>
+    <canvas id="scratchCanvas" width="500" height="400"></canvas>
+
+    <!-- Labels (initially hidden) -->
+    <div id="notA" class="label" style="top: 150px; left: 90px;">¬A</div>
+    <div id="intersection" class="label" style="top: 150px; left: 210px;">A ∩ B</div>
+    <div id="outside" class="label" style="top: 300px; left: 180px;">(A ∪ B)̄</div>
+  </div>
+
+  <!-- Sound -->
+  <audio id="scratchSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_09c9b60f2e.mp3?filename=scratch-19131.mp3" preload="auto"></audio>
+
+  <script>
+    const scratchCanvas = document.getElementById("scratchCanvas");
+    const ctx = scratchCanvas.getContext("2d");
+    const rect = scratchCanvas.getBoundingClientRect();
+    let isDrawing = false;
+    const radius = 20;
+
+    // Zones to track scratched pixels
+    const zones = {
+      notA: { x: 120, y: 200, r: 60, scratched: 0, threshold: 300 },
+      intersection: { x: 250, y: 200, r: 50, scratched: 0, threshold: 300 },
+      outside: { x: 400, y: 50, r: 80, scratched: 0, threshold: 300 },
+    };
+
+    const labels = {
+      notA: document.getElementById("notA"),
+      intersection: document.getElementById("intersection"),
+      outside: document.getElementById("outside")
+    };
+
+    // Sound
+    const scratchSound = document.getElementById("scratchSound");
+
+    // Scratch Layer
+    ctx.fillStyle = "#ccc";
+    ctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
+
+    function playSound() {
+      scratchSound.currentTime = 0;
+      scratchSound.play();
+    }
+
+    function stopSound() {
+      scratchSound.pause();
+      scratchSound.currentTime = 0;
+    }
+
+    function getZoneName(x, y) {
+      for (let key in zones) {
+        const z = zones[key];
+        const dx = x - z.x;
+        const dy = y - z.y;
+        if (dx * dx + dy * dy <= z.r * z.r) return key;
+      }
+      return null;
+    }
+
+    function scratch(e) {
+      if (!isDrawing) return;
+      const x = (e.clientX || e.touches[0].clientX) - rect.left;
+      const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      playSound();
+
+      // Track scratch in zones
+      const zone = getZoneName(x, y);
+      if (zone) {
+        zones[zone].scratched += 1;
+        if (zones[zone].scratched > zones[zone].threshold) {
+          labels[zone].style.display = "block";
+        }
+      }
+    }
+
+    scratchCanvas.addEventListener("mousedown", () => {
+      isDrawing = true;
+    });
+    scratchCanvas.addEventListener("mouseup", () => {
+      isDrawing = false;
+      stopSound();
+    });
+    scratchCanvas.addEventListener("mousemove", scratch);
+    scratchCanvas.addEventListener("touchstart", () => {
+      isDrawing = true;
+    });
+    scratchCanvas.addEventListener("touchend", () => {
+      isDrawing = false;
+      stopSound();
+    });
+    scratchCanvas.addEventListener("touchmove", scratch);
+
+    // Background Venn Diagram
+    const bgCanvas = document.getElementById("backgroundCanvas");
+    const bgCtx = bgCanvas.getContext("2d");
+
+    // Draw Universal Set Rectangle
+    bgCtx.strokeStyle = "black";
+    bgCtx.lineWidth = 2;
+    bgCtx.strokeRect(10, 10, 480, 380);
+
+    // Draw Set A
+    bgCtx.beginPath();
+    bgCtx.fillStyle = "rgba(0, 150, 255, 0.5)";
+    bgCtx.arc(200, 200, 80, 0, Math.PI * 2);
+    bgCtx.fill();
+    bgCtx.stroke();
+
+    // Draw Set B
+    bgCtx.beginPath();
+    bgCtx.fillStyle = "rgba(255, 0, 0, 0.5)";
+    bgCtx.arc(300, 200, 80, 0, Math.PI * 2);
+    bgCtx.fill();
+    bgCtx.stroke();
+
+    // Intersection zone (overlay darker color)
+    bgCtx.beginPath();
+    bgCtx.fillStyle = "rgba(128, 0, 128, 0.5)";
+    bgCtx.arc(250, 200, 40, 0, Math.PI * 2);
+    bgCtx.fill();
+
+    // A and B labels
+    bgCtx.font = "20px sans-serif";
+    bgCtx.fillStyle = "black";
+    bgCtx.fillText("A", 160, 190);
+    bgCtx.fillText("B", 330, 190);
+  </script>
+</body>
+</html>
