@@ -38,13 +38,14 @@
     <canvas id="scratchCanvas" width="500" height="400"></canvas>
 
     <!-- Labels (initially hidden) -->
-    <div id="notA" class="label" style="top: 150px; left: 90px;">¬A</div>
-    <div id="intersection" class="label" style="top: 150px; left: 210px;">A ∩ B</div>
-    <div id="outside" class="label" style="top: 300px; left: 180px;">(A ∪ B)̄</div>
+    <div id="onlyA" class="label" style="top: 150px; left: 120px;">Only A</div>
+    <div id="intersection" class="label" style="top: 150px; left: 220px;">A ∩ B</div>
+    <div id="onlyB" class="label" style="top: 150px; left: 330px;">Only B</div>
+    <div id="outside" class="label" style="top: 320px; left: 180px;">Outside (¬A ∧ ¬B)</div>
   </div>
 
   <!-- Sound -->
-  <audio id="scratchSound" src=" " preload="auto"></audio>
+  <audio id="scratchSound" src="" preload="auto"></audio>
 
   <script>
     const scratchCanvas = document.getElementById("scratchCanvas");
@@ -53,23 +54,29 @@
     let isDrawing = false;
     const radius = 20;
 
-    // Zones to track scratched pixels
+    // Circle definitions for outside calculation
+    const circleA = { x: 200, y: 200, r: 80 };
+    const circleB = { x: 300, y: 200, r: 80 };
+
+    // Zones for scratch detection
     const zones = {
-      notA: { x: 120, y: 200, r: 60, scratched: 0, threshold: 300 },
-      intersection: { x: 250, y: 200, r: 50, scratched: 0, threshold: 300 },
-      outside: { x: 400, y: 50, r: 80, scratched: 0, threshold: 300 },
+      onlyA: { x: 170, y: 200, r: 50, scratched: 0, threshold: 250 },
+      intersection: { x: 250, y: 200, r: 40, scratched: 0, threshold: 250 },
+      onlyB: { x: 330, y: 200, r: 50, scratched: 0, threshold: 250 },
+      outside: { scratched: 0, threshold: 400 } // full outside area
     };
 
     const labels = {
-      notA: document.getElementById("notA"),
+      onlyA: document.getElementById("onlyA"),
       intersection: document.getElementById("intersection"),
+      onlyB: document.getElementById("onlyB"),
       outside: document.getElementById("outside")
     };
 
     // Sound
     const scratchSound = document.getElementById("scratchSound");
 
-    // Scratch Layer
+    // Scratch Layer (gray overlay)
     ctx.fillStyle = "#ccc";
     ctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
 
@@ -84,12 +91,19 @@
     }
 
     function getZoneName(x, y) {
-      for (let key in zones) {
+      // Check circle zones first
+      for (let key of ["onlyA", "intersection", "onlyB"]) {
         const z = zones[key];
         const dx = x - z.x;
         const dy = y - z.y;
         if (dx * dx + dy * dy <= z.r * z.r) return key;
       }
+
+      // If not inside either circle, it's outside
+      const dA = (x - circleA.x) ** 2 + (y - circleA.y) ** 2 <= circleA.r ** 2;
+      const dB = (x - circleB.x) ** 2 + (y - circleB.y) ** 2 <= circleB.r ** 2;
+      if (!dA && !dB) return "outside";
+
       return null;
     }
 
@@ -115,47 +129,40 @@
       }
     }
 
-    scratchCanvas.addEventListener("mousedown", () => {
-      isDrawing = true;
-    });
-    scratchCanvas.addEventListener("mouseup", () => {
-      isDrawing = false;
-      stopSound();
-    });
+    scratchCanvas.addEventListener("mousedown", () => { isDrawing = true; });
+    scratchCanvas.addEventListener("mouseup", () => { isDrawing = false; stopSound(); });
     scratchCanvas.addEventListener("mousemove", scratch);
-    scratchCanvas.addEventListener("touchstart", () => {
-      isDrawing = true;
-    });
-    scratchCanvas.addEventListener("touchend", () => {
-      isDrawing = false;
-      stopSound();
-    });
+    scratchCanvas.addEventListener("touchstart", () => { isDrawing = true; });
+    scratchCanvas.addEventListener("touchend", () => { isDrawing = false; stopSound(); });
     scratchCanvas.addEventListener("touchmove", scratch);
 
     // Background Venn Diagram
     const bgCanvas = document.getElementById("backgroundCanvas");
     const bgCtx = bgCanvas.getContext("2d");
 
-    // Draw Universal Set Rectangle
+    // Universal Set Rectangle (yellow outside)
+    bgCtx.fillStyle = "rgba(255, 255, 0, 0.2)"; // faint yellow
+    bgCtx.fillRect(10, 10, 480, 380);
+
     bgCtx.strokeStyle = "black";
     bgCtx.lineWidth = 2;
     bgCtx.strokeRect(10, 10, 480, 380);
 
-    // Draw Set A
+    // Set A
     bgCtx.beginPath();
     bgCtx.fillStyle = "rgba(0, 150, 255, 0.5)";
-    bgCtx.arc(200, 200, 80, 0, Math.PI * 2);
+    bgCtx.arc(circleA.x, circleA.y, circleA.r, 0, Math.PI * 2);
     bgCtx.fill();
     bgCtx.stroke();
 
-    // Draw Set B
+    // Set B
     bgCtx.beginPath();
     bgCtx.fillStyle = "rgba(255, 0, 0, 0.5)";
-    bgCtx.arc(300, 200, 80, 0, Math.PI * 2);
+    bgCtx.arc(circleB.x, circleB.y, circleB.r, 0, Math.PI * 2);
     bgCtx.fill();
     bgCtx.stroke();
 
-    // Intersection zone (overlay darker color)
+    // Intersection overlay
     bgCtx.beginPath();
     bgCtx.fillStyle = "rgba(128, 0, 128, 0.5)";
     bgCtx.arc(250, 200, 40, 0, Math.PI * 2);
